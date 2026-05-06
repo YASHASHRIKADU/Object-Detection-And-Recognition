@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="login-wrapper">
+    <div class="login-container">
+        <div class="text-center mb-4">
+            <h2 class="login-title">Login</h2>
+            <p class="login-subtitle">Welcome back to Smart Object Detection & Recognition</p>
+        </div>
+        
+        <form method="post" action="/login" class="login-form">
+            <div class="form-group mb-4">
+                <label for="email" class="form-label">Email</label>
+                <div class="input-icon-wrapper">
+                    <i class="fa-solid fa-envelope input-icon"></i>
+                    <input type="email" id="email" name="email" class="form-control glass-input" placeholder="Enter your email" required>
+                </div>
+            </div>
+            
+            <div class="form-group mb-4">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-icon-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" class="form-control glass-input pr-5" placeholder="Enter your password" required>
+                    <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePasswordVisibility('password', this)" title="Show/Hide Password"></i>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary-gradient w-100 mb-3">Login</button>
+            
+            <div class="text-center mt-3">
+                <span class="text-muted">Don't have an account?</span> 
+                <a href="/register" class="accent-link">Create Account</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function togglePasswordVisibility(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
+    }
+</script>
+
+{% endblock %}
