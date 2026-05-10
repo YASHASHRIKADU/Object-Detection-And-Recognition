@@ -12,8 +12,10 @@ from ultralytics import YOLO
 load_dotenv()
 
 app = Flask(__name__)
-# Enable CORS for all domains so Vercel frontend can access it
-CORS(app, supports_credentials=True, origins="*")
+# Allow the Vercel frontend (and any origin) to call this API.
+# NOTE: supports_credentials=True is incompatible with origins="*" per the
+# CORS spec — browsers will block it. We simply allow all origins without credentials.
+CORS(app, origins="*")
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback_secret_key_if_env_missing")
 DB = "database.db"
 
@@ -48,6 +50,12 @@ def init_db():
     con.close()
 
 init_db()
+
+@app.route('/health', methods=['GET'])
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """Wake-up / health check endpoint used by the frontend keep-alive ping."""
+    return jsonify({"status": "ok"})
 
 @app.route('/api/login', methods=['POST'])
 def login_post():

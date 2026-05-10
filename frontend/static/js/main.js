@@ -9,6 +9,10 @@ let lastSpokenTime = 0;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    // Ping the backend to wake it from Render's free-tier cold start.
+    // This runs silently in the background before the user clicks anything.
+    fetch(`${API_URL}/health`).catch(() => {});
+
     // Check if logged in
     const storedUser = localStorage.getItem('user_name');
     if (storedUser) {
@@ -57,7 +61,7 @@ async function handleLogin(e) {
             errorDiv.classList.remove('d-none');
         }
     } catch (err) {
-        errorDiv.innerText = "Failed to connect to API.";
+        errorDiv.innerText = "Could not reach the server. It may be waking up — please wait 30 seconds and try again.";
         errorDiv.classList.remove('d-none');
     }
 }
@@ -85,7 +89,7 @@ async function handleRegister(e) {
             errorDiv.classList.remove('d-none');
         }
     } catch (err) {
-        errorDiv.innerText = "Failed to connect to API.";
+        errorDiv.innerText = "Could not reach the server. It may be waking up — please wait 30 seconds and try again.";
         errorDiv.classList.remove('d-none');
     }
 }
