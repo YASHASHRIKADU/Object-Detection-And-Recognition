@@ -12,10 +12,27 @@ from ultralytics import YOLO
 load_dotenv()
 
 app = Flask(__name__)
-# Allow the Vercel frontend (and any origin) to call this API.
-# NOTE: supports_credentials=True is incompatible with origins="*" per the
-# CORS spec — browsers will block it. We simply allow all origins without credentials.
-CORS(app, origins="*")
+# Primary CORS setup via flask-cors
+CORS(app, resources={r"/*": {"origins": "*"}},
+     allow_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "OPTIONS"])
+
+# Secondary safety net: manually inject CORS headers on EVERY response.
+# This ensures CORS works even during cold starts and on error responses
+# where flask-cors may not fire.
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
+
+# Handle browser preflight OPTIONS requests explicitly so they always
+# return 200 immediately — even before the app is fully warm.
+@app.route("/api/<path:path>", methods=["OPTIONS"])
+@app.route("/health", methods=["OPTIONS"])
+def handle_options(path=""):
+    return "", 200
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fallback_secret_key_if_env_missing")
 DB = "database.db"
 
@@ -156,3 +173,4 @@ def detect_objects():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
