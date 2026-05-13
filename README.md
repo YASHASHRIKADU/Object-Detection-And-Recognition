@@ -8,8 +8,8 @@ An AI-powered real-time object detection web application that uses **YOLOv8** to
 
 | Service  | URL |
 |----------|-----|
-| Frontend | Your Vercel deployment URL |
-| Backend  | Your Render deployment URL |
+| Frontend | Deployed on [Vercel](https://vercel.com) |
+| Backend  | `https://object-detection-and-recognition.onrender.com` |
 
 ---
 
